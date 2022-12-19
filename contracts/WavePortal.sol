@@ -5,11 +5,13 @@ pragma solidity ^0.8.17;
 import "hardhat/console.sol";
 
 contract WavePortal {
-    event NewWave(address indexed from, uint256 timestamp, string message);
+    event NewWave(address indexed from, string message, string name, string email, uint256 timestamp);
 
     struct Wave  {
         address sender;
         string message;
+        string name;
+        string email;
         uint256 timestamp;
     }
 
@@ -17,17 +19,13 @@ contract WavePortal {
     uint256 private seed;
     Wave[] waves;
 
-    /*
- * This is an address => uint mapping, meaning I can associate an address with a number!
- * In this case, I'll be storing the address with the last time the user waved at us.
- */
     mapping(address => uint256) public lastWavedAt;
 
     constructor() payable {
         seed = (block.timestamp + block.difficulty) % 100;
     }
 
-    function newWave(string memory _message) public {
+    function newWave(string memory _message, string memory _name, string memory _email) public {
         require(
             lastWavedAt[msg.sender] + 15 seconds < block.timestamp,
             "15 seconds"
@@ -36,7 +34,7 @@ contract WavePortal {
 
 
         totalWaveCnt += 1;
-        waves.push(Wave(msg.sender, _message, block.timestamp));
+        waves.push(Wave(msg.sender, _message, _name, _email, block.timestamp));
         seed = (block.difficulty + block.timestamp + seed) % 100;
 
         if (seed <= 50) {
@@ -49,7 +47,7 @@ contract WavePortal {
             console.log("%s won %k!", msg.sender, prizeAmount);
             require(success, "Failed to withdraw money from contract.");
         }
-        emit NewWave(msg.sender, block.timestamp, _message);
+        emit NewWave(msg.sender, _message, _name, _email, block.timestamp);
     }
 
     function getAllWaves() public view returns (Wave[] memory) {

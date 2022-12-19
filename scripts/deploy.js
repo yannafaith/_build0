@@ -5,7 +5,6 @@ const main = async () => {
     });
 
     await waveContract.deployed();
-
     console.log("WavePortal address: ", waveContract.address);
 };
 
