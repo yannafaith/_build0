@@ -15,14 +15,14 @@ const main = async () => {
     );
 
     /*
-     * Send Wave
+     * Let's try two waves now
      */
-    let waveTxn = await waveContract.newWave("A message!");
+    const waveTxn = await waveContract.newWave("This is wave #1");
     await waveTxn.wait();
 
-    /*
-     * Get Contract balance to see what happened!
-     */
+    const waveTxn2 = await waveContract.newWave("This is wave #2");
+    await waveTxn2.wait();
+
     contractBalance = await hre.ethers.provider.getBalance(waveContract.address);
     console.log(
         "Contract balance:",
